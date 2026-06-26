@@ -10,8 +10,13 @@ export function useIsMobile() {
     const onChange = () => {
       setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
     }
+
+    const updateInitialValue = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    }
+
     mql.addEventListener("change", onChange)
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    updateInitialValue()
     return () => mql.removeEventListener("change", onChange)
   }, [])
 
