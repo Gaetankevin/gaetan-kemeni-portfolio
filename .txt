@@ -9,3 +9,7 @@ git push -u origin main
 
 git config --global user.email "g45398364@gmail.com"
 git config --global user.name "Gaetankevin"
+
+git add .
+git commit -m "commit : ajout du footer, de l'en-tête, de la scène 3D et de la page d'accueil"
+git push
