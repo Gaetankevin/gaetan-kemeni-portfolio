@@ -1,4 +1,5 @@
 import { ChevronDown, Menu } from "lucide-react";
+import { Logo3D } from "@/components/3d/Logo3D";
 
 export function Header() {
   return (
@@ -7,9 +8,7 @@ export function Header() {
         
         {/* LOGO */}
         <div className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-8 h-8 rounded-full bg-violet-600/10 border border-violet-500/20 flex items-center justify-center group-hover:scale-110 group-hover:border-violet-400/50 transition-all duration-500">
-            <div className="w-2.5 h-2.5 rounded-full bg-violet-500 group-hover:bg-violet-400 transition-colors shadow-[0_0_10px_rgba(139,92,246,0.5)]"></div>
-          </div>
+          <Logo3D />
           <div className="text-white font-bold text-xl tracking-[0.25em] flex items-center mt-1">
             SOS<span className="font-light text-white/60">JURISTES</span>
           </div>
