@@ -71,7 +71,8 @@ export function LoginForm() {
           <div className="flex items-center justify-between">
             <Label htmlFor="password" className="text-zinc-300">Mot de passe</Label>
             <Link href="#" className="text-xs font-medium text-violet-400 hover:text-violet-300 transition-colors">
-              Mot de passe oublié ?
+              Mot de passe oublié ?  <br />
+                Réinitialisez le mot de passe
             </Link>
           </div>
           <Input
