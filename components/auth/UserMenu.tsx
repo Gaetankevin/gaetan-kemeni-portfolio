@@ -64,20 +64,12 @@ export function UserMenu({ user }: UserMenuProps) {
           
           <div className="p-2 flex flex-col gap-1">
             <Link 
-              href="/dashboard" 
+              href="/account" 
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
               onClick={() => setIsOpen(false)}
             >
               <LayoutDashboard size={16} className="text-violet-400" />
-              Mon Tableau de Bord
-            </Link>
-            <Link 
-              href="/profile" 
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              <UserIcon size={16} className="text-violet-400" />
-              Mon Profil
+              Mon Espace
             </Link>
           </div>
 
