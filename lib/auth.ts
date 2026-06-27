@@ -9,6 +9,7 @@ import bcrypt from "bcryptjs";
 export const authOptions: NextAuthOptions = {
   // @ts-ignore - Prisma adapter type mismatch due to custom generated/prisma output path
   adapter: PrismaAdapter(prisma),
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
   },
