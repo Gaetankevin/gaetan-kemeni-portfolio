@@ -7,49 +7,36 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 
-export function RegisterForm() {
+export function LoginForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState({
-    name: "",
     email: "",
     password: "",
   });
 
-  const registerUser = async (e: React.FormEvent) => {
+  const loginUser = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+      const res = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
       });
 
-      if (response.ok) {
-        // If registration is successful, automatically sign in
-        const res = await signIn("credentials", {
-          email: data.email,
-          password: data.password,
-          redirect: false,
-        });
-
-        if (res?.error) {
-          setError("Erreur lors de la connexion après inscription");
-        } else {
-          router.push("/");
-        }
+      if (res?.error) {
+        setError("Email ou mot de passe incorrect");
       } else {
-        const text = await response.text();
-        setError(text || "Erreur lors de l'inscription");
+        router.push("/");
+        router.refresh(); // Refresh to update session state across the app
       }
     } catch (err) {
-      setError("Une erreur est survenue");
+      setError("Une erreur est survenue lors de la connexion");
     } finally {
       setLoading(false);
     }
@@ -62,23 +49,11 @@ export function RegisterForm() {
   return (
     <div className="w-full max-w-md mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Get Started Now</h1>
-        <p className="text-sm text-zinc-400">Créez votre compte pour accéder à l'écosystème SosJuristes.</p>
+        <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Bon retour</h1>
+        <p className="text-sm text-zinc-400">Connectez-vous pour accéder à votre espace SosJuristes.</p>
       </div>
 
-      <form onSubmit={registerUser} className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="name" className="text-zinc-300">Nom complet</Label>
-          <Input
-            id="name"
-            placeholder="Entrez votre nom"
-            required
-            className="bg-white/5 border-white/10 text-white placeholder:text-zinc-500 focus-visible:ring-violet-500"
-            value={data.name}
-            onChange={(e) => setData({ ...data, name: e.target.value })}
-          />
-        </div>
-
+      <form onSubmit={loginUser} className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="email" className="text-zinc-300">Adresse email</Label>
           <Input
@@ -93,23 +68,21 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password" className="text-zinc-300">Mot de passe</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password" className="text-zinc-300">Mot de passe</Label>
+            <Link href="#" className="text-xs font-medium text-violet-400 hover:text-violet-300 transition-colors">
+              Mot de passe oublié ?
+            </Link>
+          </div>
           <Input
             id="password"
             type="password"
-            placeholder="Créez un mot de passe"
+            placeholder="Entrez votre mot de passe"
             required
             className="bg-white/5 border-white/10 text-white placeholder:text-zinc-500 focus-visible:ring-violet-500"
             value={data.password}
             onChange={(e) => setData({ ...data, password: e.target.value })}
           />
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Checkbox id="terms" required className="border-white/20 data-[state=checked]:bg-violet-500 data-[state=checked]:border-violet-500" />
-          <Label htmlFor="terms" className="text-xs font-light text-zinc-400 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            J'accepte les conditions d'utilisation et la politique de confidentialité.
-          </Label>
         </div>
 
         {error && (
@@ -123,7 +96,7 @@ export function RegisterForm() {
           disabled={loading} 
           className="w-full bg-violet-600 hover:bg-violet-700 text-white rounded-full py-6 font-medium tracking-wide transition-all shadow-[0_0_20px_rgba(124,58,237,0.3)]"
         >
-          {loading ? "Création en cours..." : "S'inscrire"}
+          {loading ? "Connexion en cours..." : "Se connecter"}
         </Button>
       </form>
 
@@ -132,7 +105,7 @@ export function RegisterForm() {
           <span className="w-full border-t border-white/10" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-[#06070b] px-2 text-zinc-500">Ou</span>
+          <span className="bg-[#06070b] px-2 text-zinc-500">Ou continuer avec</span>
         </div>
       </div>
 
@@ -163,9 +136,9 @@ export function RegisterForm() {
       </div>
 
       <p className="text-center text-sm text-zinc-400">
-        Have an account?{" "}
-        <Link href="/login" className="font-medium text-violet-400 hover:text-violet-300 transition-colors">
-          Sign In
+        Pas encore de compte ?{" "}
+        <Link href="/register" className="font-medium text-violet-400 hover:text-violet-300 transition-colors">
+          S'inscrire
         </Link>
       </p>
     </div>

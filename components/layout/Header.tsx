@@ -1,7 +1,13 @@
+"use client";
+
 import { ChevronDown, Menu } from "lucide-react";
 import { Logo3D } from "@/components/3d/Logo3D";
+import { useSession } from "next-auth/react";
+import { UserMenu } from "@/components/auth/UserMenu";
+import Link from "next/link";
 
 export function Header() {
+  const { data: session } = useSession();
   return (
     <header className="fixed top-0 left-0 w-full z-50 border-b border-white/5 bg-[#06070b]/70 backdrop-blur-2xl transition-all duration-300">
       <div className="max-w-[1600px] mx-auto px-6 md:px-12 h-24 flex justify-between items-center">
@@ -38,17 +44,23 @@ export function Header() {
 
         {/* ACTIONS DROITE */}
         <div className="hidden lg:flex items-center gap-8">
-          <a href="#" className="text-xs font-bold uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors">
-            Se connecter
-          </a>
-          <button className="relative group overflow-hidden rounded-full p-[1px]">
-            <span className="absolute inset-0 bg-gradient-to-r from-violet-600/50 via-indigo-500/50 to-violet-600/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[length:200%_auto] animate-gradient"></span>
-            <div className="relative bg-[#06070b] border border-white/10 px-8 py-3.5 rounded-full flex items-center gap-2 group-hover:border-transparent transition-colors duration-500">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-white">
-                Espace Pro
-              </span>
-            </div>
-          </button>
+          {session?.user ? (
+            <UserMenu user={session.user} />
+          ) : (
+            <>
+              <Link href="/login" className="text-xs font-bold uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors">
+                Se connecter
+              </Link>
+              <Link href="/register" className="relative group overflow-hidden rounded-full p-[1px] block">
+                <span className="absolute inset-0 bg-gradient-to-r from-violet-600/50 via-indigo-500/50 to-violet-600/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[length:200%_auto] animate-gradient"></span>
+                <div className="relative bg-[#06070b] border border-white/10 px-8 py-3.5 rounded-full flex items-center gap-2 group-hover:border-transparent transition-colors duration-500">
+                  <span className="text-xs font-bold uppercase tracking-[0.2em] text-white">
+                    Espace Pro
+                  </span>
+                </div>
+              </Link>
+            </>
+          )}
         </div>
 
         {/* MENU MOBILE */}

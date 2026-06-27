@@ -1,6 +1,12 @@
+"use client";
+
 import { ArrowRight, ArrowUp } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 export function Footer() {
+  const { data: session } = useSession();
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -22,11 +28,17 @@ export function Footer() {
           <div className="col-span-1 md:col-span-2">
             <h4 className="text-white font-medium mb-6 uppercase tracking-widest text-sm">Pages</h4>
             <ul className="space-y-4 text-white/40 text-sm font-medium uppercase tracking-wider">
-              <li><a href="#" className="hover:text-white transition-colors duration-300">Accueil</a></li>
-              <li><a href="#" className="hover:text-white transition-colors duration-300">Plateforme</a></li>
-              <li><a href="#vision" className="hover:text-white transition-colors duration-300">Vision</a></li>
-              <li><a href="#features" className="hover:text-white transition-colors duration-300">Solutions</a></li>
-              <li><a href="#" className="hover:text-white transition-colors duration-300">Espace Pro</a></li>
+              <li><Link href="/" className="hover:text-white transition-colors duration-300">Accueil</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors duration-300">Plateforme</Link></li>
+              <li><Link href="#vision" className="hover:text-white transition-colors duration-300">Vision</Link></li>
+              <li><Link href="#features" className="hover:text-white transition-colors duration-300">Solutions</Link></li>
+              <li>
+                {session?.user ? (
+                  <Link href="/dashboard" className="hover:text-violet-400 transition-colors duration-300">Mon Tableau de Bord</Link>
+                ) : (
+                  <Link href="/register" className="hover:text-white transition-colors duration-300">Espace Pro</Link>
+                )}
+              </li>
             </ul>
           </div>
 

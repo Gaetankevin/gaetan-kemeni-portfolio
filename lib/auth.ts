@@ -7,13 +7,13 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
-  // @ts-expect-error - Prisma adapter type mismatch due to custom generated/prisma output path
+  // @ts-ignore - Prisma adapter type mismatch due to custom generated/prisma output path
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
   },
   pages: {
-    signIn: "/register", // On utilise register comme page de connexion aussi pour simplifier
+    signIn: "/login",
   },
   providers: [
     GoogleProvider({
