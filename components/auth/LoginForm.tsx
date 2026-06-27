@@ -32,7 +32,7 @@ export function LoginForm() {
       if (res?.error) {
         setError("Email ou mot de passe incorrect");
       } else {
-        router.push("/");
+        router.push("/account");
         router.refresh(); // Refresh to update session state across the app
       }
     } catch (err) {
@@ -43,7 +43,7 @@ export function LoginForm() {
   };
 
   const handleOAuthSignIn = (provider: "google" | "facebook") => {
-    signIn(provider, { callbackUrl: "/" });
+    signIn(provider, { callbackUrl: "/account" });
   };
 
   return (

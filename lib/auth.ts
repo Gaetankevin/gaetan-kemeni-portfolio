@@ -58,15 +58,25 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           image: user.image,
+          role: user.role,
+          username: user.username,
         };
       },
     }),
   ],
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+        token.username = user.username;
+      }
+      return token;
+    },
     async session({ session, token }) {
       if (token && session.user) {
-        session.user.name = token.name;
-        // Types to add if necessary
+        session.user.role = token.role as string;
+        session.user.username = token.username as string | null;
+        session.user.id = token.sub as string;
       }
       return session;
     },

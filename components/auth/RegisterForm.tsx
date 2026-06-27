@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+import { registerUser } from "@/app/actions/auth";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -19,19 +19,20 @@ export function RegisterForm() {
     password: "",
   });
 
-  const registerUser = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("email", data.email);
+      formData.append("password", data.password);
 
-      if (response.ok) {
+      const result = await registerUser(formData);
+
+      if (result.success) {
         // If registration is successful, automatically sign in
         const res = await signIn("credentials", {
           email: data.email,
@@ -42,11 +43,11 @@ export function RegisterForm() {
         if (res?.error) {
           setError("Erreur lors de la connexion après inscription");
         } else {
-          router.push("/");
+          router.push("/account");
+          router.refresh();
         }
       } else {
-        const text = await response.text();
-        setError(text || "Erreur lors de l'inscription");
+        setError(result.error || "Erreur lors de l'inscription");
       }
     } catch (err) {
       setError("Une erreur est survenue");
@@ -56,7 +57,7 @@ export function RegisterForm() {
   };
 
   const handleOAuthSignIn = (provider: "google" | "facebook") => {
-    signIn(provider, { callbackUrl: "/" });
+    signIn(provider, { callbackUrl: "/account" });
   };
 
   return (
@@ -66,7 +67,7 @@ export function RegisterForm() {
         <p className="text-sm text-zinc-400">Créez votre compte pour accéder à l'écosystème SosJuristes.</p>
       </div>
 
-      <form onSubmit={registerUser} className="space-y-6">
+      <form onSubmit={onSubmit} className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="name" className="text-zinc-300">Nom complet</Label>
           <Input

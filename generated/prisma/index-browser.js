@@ -144,11 +144,13 @@ exports.Prisma.SessionScalarFieldEnum = {
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
+  username: 'username',
   name: 'name',
   email: 'email',
   emailVerified: 'emailVerified',
   image: 'image',
-  password: 'password'
+  password: 'password',
+  role: 'role'
 };
 
 exports.Prisma.VerificationTokenScalarFieldEnum = {
@@ -171,7 +173,11 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.Role = exports.$Enums.Role = {
+  JUSTICIABLE: 'JUSTICIABLE',
+  PRO: 'PRO',
+  ADMIN: 'ADMIN'
+};
 
 exports.Prisma.ModelName = {
   Account: 'Account',
