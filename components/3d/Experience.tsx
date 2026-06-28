@@ -114,7 +114,7 @@ export function Experience({ scrollProgress = 0 }: { scrollProgress?: number }) 
         angle={0.15} 
         penumbra={1} 
         intensity={2} 
-        castShadow 
+        castShadow={!isMobile} 
         color="#ffffff" 
       />
       <spotLight 

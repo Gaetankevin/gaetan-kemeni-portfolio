@@ -37,7 +37,7 @@ export default function Home() {
   return (
     <>
       <SmoothScroll />
-      
+
       {/* COUCHE 0 : Canvas Fixe */}
       <div className="fixed top-0 left-0 w-full h-full -z-10 bg-[#09090b]">
         <Suspense fallback={
@@ -55,7 +55,7 @@ export default function Home() {
       </div>
 
       {/* COUCHE 2 : Moteur de Scroll (Scroll Track pour GSAP) */}
-      <main className="scroll-track relative w-full h-[500vh] opacity-0 pointer-events-none">
+      <main className="scroll-track relative w-full h-[1000vh] opacity-0 pointer-events-none">
         {/* Cet élément ne sert qu'à créer la barre de défilement pour GSAP ScrollTrigger */}
       </main>
     </>

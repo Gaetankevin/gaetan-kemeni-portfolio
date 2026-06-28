@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useMemo, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Float, MeshTransmissionMaterial } from "@react-three/drei";
@@ -12,6 +12,15 @@ export function WorksScene({
   isMobile?: boolean; 
 }) {
   const groupRef = useRef<THREE.Group>(null);
+
+  // Solution 2: Pre-allocate geometries and dispose of them on unmount to prevent memory leaks and GC pressure
+  const boxGeo = useMemo(() => new THREE.BoxGeometry(2, 3, 0.05), []);
+
+  useEffect(() => {
+    return () => {
+      boxGeo.dispose();
+    };
+  }, [boxGeo]);
 
   useFrame((state, delta) => {
     if (groupRef.current) {
@@ -29,9 +38,8 @@ export function WorksScene({
             <mesh 
               position={[(i - 1) * 2.5, i * 0.5 - 0.5, i * -2]} 
               rotation={[0.1, -0.2, 0]}
+              geometry={boxGeo}
             >
-              <boxGeometry args={[2, 3, 0.05]} />
-              
               {/* Option 2: Fallback to lightweight meshPhysicalMaterial on mobile devices */}
               {isMobile ? (
                 <meshPhysicalMaterial
@@ -52,8 +60,7 @@ export function WorksScene({
                 />
               )}
 
-              <mesh scale={[1.01, 1.01, 1.01]}>
-                 <boxGeometry args={[2, 3, 0.05]} />
+              <mesh scale={[1.01, 1.01, 1.01]} geometry={boxGeo}>
                  <meshBasicMaterial color="#ffffff" wireframe transparent opacity={0.2} />
               </mesh>
             </mesh>

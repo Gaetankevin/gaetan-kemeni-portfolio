@@ -1,12 +1,26 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useMemo, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Float, MeshTransmissionMaterial } from "@react-three/drei";
 
 export function SignatureObject({ isMobile = false }: { isMobile?: boolean }) {
   const meshRef = useRef<THREE.Mesh>(null);
+
+  // Solution 2: Pre-allocate geometries and dispose of them on unmount to prevent memory leaks and GC pressure
+  const { crystalGeo, coreGeo } = useMemo(() => {
+    const crystal = new THREE.IcosahedronGeometry(1.5, 0);
+    const core = new THREE.OctahedronGeometry(0.8, 0);
+    return { crystalGeo: crystal, coreGeo: core };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      crystalGeo.dispose();
+      coreGeo.dispose();
+    };
+  }, [crystalGeo, coreGeo]);
 
   useFrame((state, delta) => {
     if (meshRef.current) {
@@ -22,10 +36,7 @@ export function SignatureObject({ isMobile = false }: { isMobile?: boolean }) {
       floatIntensity={2}
       floatingRange={[-0.2, 0.2]}
     >
-      <mesh ref={meshRef} castShadow receiveShadow>
-        {/* Icosahedron provides a nice crystal-like base geometry */}
-        <icosahedronGeometry args={[1.5, 0]} />
-        
+      <mesh ref={meshRef} castShadow receiveShadow geometry={crystalGeo}>
         {/* Option 2: Fallback to lightweight meshPhysicalMaterial on mobile devices */}
         {isMobile ? (
           <meshPhysicalMaterial
@@ -53,8 +64,7 @@ export function SignatureObject({ isMobile = false }: { isMobile?: boolean }) {
       </mesh>
       
       {/* Inner geometric core to add complexity to the refraction */}
-      <mesh>
-        <octahedronGeometry args={[0.8, 0]} />
+      <mesh geometry={coreGeo}>
         <meshStandardMaterial 
           color="#ffffff" 
           wireframe 

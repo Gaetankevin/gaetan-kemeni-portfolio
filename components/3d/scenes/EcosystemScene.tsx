@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useMemo, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Float, MeshTransmissionMaterial } from "@react-three/drei";
@@ -13,6 +13,28 @@ export function EcosystemScene({
 }) {
   const laptopRef = useRef<THREE.Group>(null);
   const serverRef = useRef<THREE.Group>(null);
+
+  // Solution 2: Pre-allocate geometries and dispose of them on unmount to prevent memory leaks and GC pressure
+  const { serverUnitGeo, ledGeo, baseGeo, screenGeo, glowGeo, lineGeo } = useMemo(() => {
+    const su = new THREE.BoxGeometry(1.5, 0.4, 1.2);
+    const led = new THREE.BoxGeometry(0.05, 0.05, 0.01);
+    const base = new THREE.BoxGeometry(2.4, 0.1, 1.6);
+    const screen = new THREE.BoxGeometry(2.4, 1.6, 0.05);
+    const glow = new THREE.PlaneGeometry(2.2, 1.4);
+    const line = new THREE.CylinderGeometry(0.02, 0.02, 5);
+    return { serverUnitGeo: su, ledGeo: led, baseGeo: base, screenGeo: screen, glowGeo: glow, lineGeo: line };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      serverUnitGeo.dispose();
+      ledGeo.dispose();
+      baseGeo.dispose();
+      screenGeo.dispose();
+      glowGeo.dispose();
+      lineGeo.dispose();
+    };
+  }, [serverUnitGeo, ledGeo, baseGeo, screenGeo, glowGeo, lineGeo]);
 
   useFrame((state, delta) => {
     if (serverRef.current) {
@@ -28,16 +50,13 @@ export function EcosystemScene({
       {/* SERVER RACK (Backend) */}
       <group ref={serverRef} position={[1.5, -1, -1]}>
         {[0, 1, 2].map((i) => (
-          <mesh key={i} position={[0, i * 0.5, 0]}>
-            <boxGeometry args={[1.5, 0.4, 1.2]} />
+          <mesh key={i} geometry={serverUnitGeo} position={[0, i * 0.5, 0]}>
             <meshStandardMaterial color="#111111" metalness={0.9} roughness={0.2} />
             {/* Blinking lights */}
-            <mesh position={[0.6, 0, 0.61]}>
-              <boxGeometry args={[0.05, 0.05, 0.01]} />
+            <mesh geometry={ledGeo} position={[0.6, 0, 0.61]}>
               <meshBasicMaterial color={i % 2 === 0 ? "#00ffcc" : "#ffffff"} />
             </mesh>
-            <mesh position={[0.4, 0, 0.61]}>
-              <boxGeometry args={[0.05, 0.05, 0.01]} />
+            <mesh geometry={ledGeo} position={[0.4, 0, 0.61]}>
               <meshBasicMaterial color="#ffffff" transparent opacity={0.5} />
             </mesh>
           </mesh>
@@ -48,14 +67,11 @@ export function EcosystemScene({
       <Float speed={2} rotationIntensity={0.2} floatIntensity={0.5}>
         <group ref={laptopRef} position={[-1.5, 1, 1]} rotation={[0.2, 0.5, -0.1]}>
           {/* Base */}
-          <mesh position={[0, 0, 0]}>
-            <boxGeometry args={[2.4, 0.1, 1.6]} />
+          <mesh geometry={baseGeo} position={[0, 0, 0]}>
             <meshStandardMaterial color="#222222" metalness={0.9} roughness={0.1} />
           </mesh>
           {/* Screen */}
-          <mesh position={[0, 0.8, -0.75]} rotation={[-0.3, 0, 0]}>
-            <boxGeometry args={[2.4, 1.6, 0.05]} />
-            
+          <mesh geometry={screenGeo} position={[0, 0.8, -0.75]} rotation={[-0.3, 0, 0]}>
             {/* Option 2: Fallback to lightweight meshPhysicalMaterial on mobile devices */}
             {isMobile ? (
               <meshPhysicalMaterial
@@ -76,16 +92,14 @@ export function EcosystemScene({
             )}
           </mesh>
           {/* Screen Glow */}
-          <mesh position={[0, 0.8, -0.73]} rotation={[-0.3, 0, 0]}>
-             <planeGeometry args={[2.2, 1.4]} />
+          <mesh geometry={glowGeo} position={[0, 0.8, -0.73]} rotation={[-0.3, 0, 0]}>
              <meshBasicMaterial color="#ffffff" transparent opacity={0.05} side={THREE.DoubleSide} />
           </mesh>
         </group>
       </Float>
       
       {/* Connecting Data Line */}
-      <mesh position={[0, 0, 0]} rotation={[0, -Math.PI/4, 0]}>
-        <cylinderGeometry args={[0.02, 0.02, 5]} />
+      <mesh geometry={lineGeo} position={[0, 0, 0]} rotation={[0, -Math.PI/4, 0]}>
         <meshBasicMaterial color="#ffffff" transparent opacity={0.1} />
       </mesh>
     </group>
