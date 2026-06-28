@@ -10,45 +10,49 @@ export function PortfolioOverlay() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const sections = gsap.utils.toArray<HTMLElement>(".portfolio-section");
-    
-    // Animate each section based on the overall scroll progress
-    // We have 5 sections spread over the 500vh scroll-track
-    sections.forEach((section, index) => {
-      // Calculate start and end points for each section (e.g., 0-20%, 20-40%, etc.)
-      const start = `${index * 20}%`;
-      const end = `${(index + 1) * 20}%`;
-
-      gsap.fromTo(
-        section,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          scrollTrigger: {
-            trigger: ".scroll-track",
-            start: `${start} top`,
-            end: `${parseFloat(start) + 10}% top`,
-            scrub: true,
-          },
-        }
-      );
-
-      gsap.to(section, {
-        opacity: 0,
-        y: -50,
+    const ctx = gsap.context(() => {
+      const sections = gsap.utils.toArray<HTMLElement>(".portfolio-section");
+      
+      // On crée une seule timeline maîtresse synchronisée au scroll
+      const tl = gsap.timeline({
         scrollTrigger: {
           trigger: ".scroll-track",
-          start: `${parseFloat(end) - 10}% top`,
-          end: `${end} top`,
+          start: "top top",
+          end: "bottom bottom",
           scrub: true,
         },
       });
-    });
 
-    return () => {
-      ScrollTrigger.getAll().forEach(st => st.kill());
-    };
+      sections.forEach((section, index) => {
+        if (index === 0) {
+          // HERO : Déjà visible, s'efface entre 10% et 20% du scroll
+          tl.to(section, { opacity: 0, y: -50, duration: 10 }, 10);
+        } else {
+          // Calcul des points d'entrée et de sortie pour un cross-fade fluide
+          const enterStart = (index * 20) - 5;
+          const exitStart = (index * 20) + 10;
+
+          // Animation d'entrée
+          tl.fromTo(
+            section,
+            { opacity: 0, y: 50 },
+            { opacity: 1, y: 0, duration: 10 },
+            enterStart
+          );
+
+          // Animation de sortie (sauf la dernière section)
+          if (index < sections.length - 1) {
+            tl.to(
+              section,
+              { opacity: 0, y: -50, duration: 10 },
+              exitStart
+            );
+          }
+        }
+      });
+    }, containerRef); // Scope au conteneur
+
+    return () => ctx.revert(); // Nettoyage total pour React 18
   }, []);
 
   return (
