@@ -21,7 +21,7 @@ export default function Home() {
       </div>
 
       {/* COUCHE 2 : Moteur de Scroll (Scroll Track pour GSAP) */}
-      <main className="scroll-track relative w-full h-[400vh] opacity-0 pointer-events-none">
+      <main className="scroll-track relative w-full h-[500vh] opacity-0 pointer-events-none">
         {/* Cet élément ne sert qu'à créer la barre de défilement pour GSAP ScrollTrigger */}
       </main>
     </>

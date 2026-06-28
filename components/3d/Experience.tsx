@@ -51,7 +51,7 @@ function CameraRig() {
       ease: "power2.inOut",
     }, 0);
     
-    // SECTION 2 (About to Work)
+    // SECTION 2 (About to Ecosystem)
     tl.to(camera.position, {
       x: -2,
       y: -1,
@@ -59,13 +59,21 @@ function CameraRig() {
       ease: "power2.inOut",
     }, 1);
 
-    // SECTION 3 (Work to Contact)
+    // SECTION 3 (Ecosystem to Realisations)
+    tl.to(camera.position, {
+      x: 2,
+      y: -2,
+      z: 5,
+      ease: "power2.inOut",
+    }, 2);
+
+    // SECTION 4 (Realisations to Contact)
     tl.to(camera.position, {
       x: 0,
       y: 0,
       z: 6,
       ease: "power2.inOut",
-    }, 2);
+    }, 3);
 
     return () => {
       if (timelineRef.current) {
