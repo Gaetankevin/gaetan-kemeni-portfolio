@@ -1,14 +1,14 @@
 "use client";
 
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
-import { Environment, Lightformer } from "@react-three/drei";
+import { Environment, Lightformer, Preload } from "@react-three/drei";
 import { EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
 import { SignatureObject } from "./SignatureObject";
 import { AboutScene } from "./scenes/AboutScene";
 import { EcosystemScene } from "./scenes/EcosystemScene";
 import { WorksScene } from "./scenes/WorksScene";
 import { ContactScene } from "./scenes/ContactScene";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import * as THREE from "three";
@@ -77,6 +77,18 @@ function CameraRig() {
 }
 
 export function Experience({ scrollProgress = 0 }: { scrollProgress?: number }) {
+  // Mobile check state for adaptive geometry and materials
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent));
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   // Performance optimization: Mount/unmount 3D scenes dynamically based on active viewport progress
   // to avoid rendering MeshTransmissionMaterial calculations on invisible objects.
   const showHero = scrollProgress < 18;
@@ -126,13 +138,13 @@ export function Experience({ scrollProgress = 0 }: { scrollProgress?: number }) 
       {/* THE 5 SCENES SCATTERED IN SPACE - DYNAMICALLY MOUNTED */}
       {showHero && (
         <group position={[0, 0, 0]}>
-          <SignatureObject />
+          <SignatureObject isMobile={isMobile} />
         </group>
       )}
       
       {showAbout && <AboutScene position={[20, 0, -20]} />}
-      {showEcosystem && <EcosystemScene position={[40, 0, -40]} />}
-      {showWorks && <WorksScene position={[60, 0, -60]} />}
+      {showEcosystem && <EcosystemScene position={[40, 0, -40]} isMobile={isMobile} />}
+      {showWorks && <WorksScene position={[60, 0, -60]} isMobile={isMobile} />}
       {showContact && <ContactScene position={[80, 0, -80]} />}
 
       <CameraRig />
@@ -142,6 +154,9 @@ export function Experience({ scrollProgress = 0 }: { scrollProgress?: number }) 
         <Noise opacity={0.025} />
         <Vignette eskil={false} offset={0.1} darkness={1.1} />
       </EffectComposer>
+
+      {/* Precompile all shader programs during loading to avoid render stutters on dynamic mount */}
+      <Preload all />
     </Canvas>
   );
 }

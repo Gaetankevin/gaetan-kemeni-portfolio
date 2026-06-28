@@ -4,7 +4,13 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Float, MeshTransmissionMaterial } from "@react-three/drei";
 
-export function WorksScene({ position }: { position: [number, number, number] }) {
+export function WorksScene({ 
+  position, 
+  isMobile = false 
+}: { 
+  position: [number, number, number]; 
+  isMobile?: boolean; 
+}) {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state, delta) => {
@@ -25,14 +31,27 @@ export function WorksScene({ position }: { position: [number, number, number] })
               rotation={[0.1, -0.2, 0]}
             >
               <boxGeometry args={[2, 3, 0.05]} />
-              <MeshTransmissionMaterial
-                background={new THREE.Color("#000000")}
-                transmission={1}
-                thickness={0.5}
-                roughness={0.1}
-                ior={1.2}
-                chromaticAberration={0.05}
-              />
+              
+              {/* Option 2: Fallback to lightweight meshPhysicalMaterial on mobile devices */}
+              {isMobile ? (
+                <meshPhysicalMaterial
+                  transmission={1}
+                  thickness={0.5}
+                  roughness={0.1}
+                  color="#ffffff"
+                  clearcoat={1}
+                />
+              ) : (
+                <MeshTransmissionMaterial
+                  background={new THREE.Color("#000000")}
+                  transmission={1}
+                  thickness={0.5}
+                  roughness={0.1}
+                  ior={1.2}
+                  chromaticAberration={0.05}
+                />
+              )}
+
               <mesh scale={[1.01, 1.01, 1.01]}>
                  <boxGeometry args={[2, 3, 0.05]} />
                  <meshBasicMaterial color="#ffffff" wireframe transparent opacity={0.2} />

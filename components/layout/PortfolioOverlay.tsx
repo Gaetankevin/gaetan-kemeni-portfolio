@@ -219,6 +219,9 @@ export function PortfolioOverlay() {
           .marquee-track:hover {
             animation-play-state: paused;
           }
+          .portfolio-section, .hero-elem, .about-elem, .work-elem {
+            will-change: transform, opacity;
+          }
         `}</style>
 
         <div className="w-full max-w-5xl text-center mb-12">

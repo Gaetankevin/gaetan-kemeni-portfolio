@@ -1,9 +1,23 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { PortfolioOverlay } from "@/components/layout/PortfolioOverlay";
-import { Experience } from "@/components/3d/Experience";
 import { Suspense, useEffect, useState } from "react";
+
+// Option 4: Dynamic import of the 3D Canvas with ssr: false
+// to ensure light initial bundle size and let client load layout first.
+const Experience = dynamic(
+  () => import("@/components/3d/Experience").then((mod) => mod.Experience),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-full flex items-center justify-center text-white/50 text-xs tracking-[0.4em] uppercase font-extralight bg-[#09090b]">
+        Loading Experience...
+      </div>
+    ),
+  }
+);
 
 export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -16,7 +30,6 @@ export default function Home() {
       setScrollProgress(progress);
     };
     window.addEventListener("scroll", handleScroll);
-    // Initial run
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -27,7 +40,11 @@ export default function Home() {
       
       {/* COUCHE 0 : Canvas Fixe */}
       <div className="fixed top-0 left-0 w-full h-full -z-10 bg-[#09090b]">
-        <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-white/50 text-xs tracking-[0.4em] uppercase font-extralight">Loading Experience...</div>}>
+        <Suspense fallback={
+          <div className="w-full h-full flex items-center justify-center text-white/50 text-xs tracking-[0.4em] uppercase font-extralight">
+            Loading Experience...
+          </div>
+        }>
           <Experience scrollProgress={scrollProgress} />
         </Suspense>
       </div>

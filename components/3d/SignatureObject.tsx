@@ -5,7 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Float, MeshTransmissionMaterial } from "@react-three/drei";
 
-export function SignatureObject() {
+export function SignatureObject({ isMobile = false }: { isMobile?: boolean }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state, delta) => {
@@ -26,19 +26,30 @@ export function SignatureObject() {
         {/* Icosahedron provides a nice crystal-like base geometry */}
         <icosahedronGeometry args={[1.5, 0]} />
         
-        {/* High-end glass/crystal material for "épure" and cinematic look */}
-        <MeshTransmissionMaterial
-          background={new THREE.Color("#000000")}
-          transmission={1}
-          thickness={1.5}
-          roughness={0.1}
-          ior={1.5}
-          chromaticAberration={0.04}
-          anisotropy={0.3}
-          color="#ffffff"
-          attenuationDistance={2}
-          attenuationColor="#ffffff"
-        />
+        {/* Option 2: Fallback to lightweight meshPhysicalMaterial on mobile devices */}
+        {isMobile ? (
+          <meshPhysicalMaterial
+            transmission={1}
+            thickness={1.5}
+            roughness={0.1}
+            metalness={0.1}
+            clearcoat={1}
+            color="#ffffff"
+          />
+        ) : (
+          <MeshTransmissionMaterial
+            background={new THREE.Color("#000000")}
+            transmission={1}
+            thickness={1.5}
+            roughness={0.1}
+            ior={1.5}
+            chromaticAberration={0.04}
+            anisotropy={0.3}
+            color="#ffffff"
+            attenuationDistance={2}
+            attenuationColor="#ffffff"
+          />
+        )}
       </mesh>
       
       {/* Inner geometric core to add complexity to the refraction */}

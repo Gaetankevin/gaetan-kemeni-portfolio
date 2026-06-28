@@ -4,7 +4,13 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Float, MeshTransmissionMaterial } from "@react-three/drei";
 
-export function EcosystemScene({ position }: { position: [number, number, number] }) {
+export function EcosystemScene({ 
+  position, 
+  isMobile = false 
+}: { 
+  position: [number, number, number]; 
+  isMobile?: boolean; 
+}) {
   const laptopRef = useRef<THREE.Group>(null);
   const serverRef = useRef<THREE.Group>(null);
 
@@ -49,13 +55,25 @@ export function EcosystemScene({ position }: { position: [number, number, number
           {/* Screen */}
           <mesh position={[0, 0.8, -0.75]} rotation={[-0.3, 0, 0]}>
             <boxGeometry args={[2.4, 1.6, 0.05]} />
-            <MeshTransmissionMaterial
-              background={new THREE.Color("#000000")}
-              transmission={0.9}
-              thickness={0.1}
-              roughness={0}
-              ior={1.5}
-            />
+            
+            {/* Option 2: Fallback to lightweight meshPhysicalMaterial on mobile devices */}
+            {isMobile ? (
+              <meshPhysicalMaterial
+                transmission={0.9}
+                thickness={0.1}
+                roughness={0}
+                color="#ffffff"
+                clearcoat={1}
+              />
+            ) : (
+              <MeshTransmissionMaterial
+                background={new THREE.Color("#000000")}
+                transmission={0.9}
+                thickness={0.1}
+                roughness={0}
+                ior={1.5}
+              />
+            )}
           </mesh>
           {/* Screen Glow */}
           <mesh position={[0, 0.8, -0.73]} rotation={[-0.3, 0, 0]}>
