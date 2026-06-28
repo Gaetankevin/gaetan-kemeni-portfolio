@@ -35,80 +35,37 @@ function CameraRig() {
     // Initial camera position
     camera.position.set(0, 0, 5);
 
-    // Create a GSAP timeline linked to the scroll container (.scroll-track)
-    timelineRef.current = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".scroll-track",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1, // Smooth scrubbing
-      },
+    const ctx = gsap.context(() => {
+      // Create a GSAP timeline linked to the scroll container (.scroll-track)
+      timelineRef.current = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".scroll-track",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1, // Smooth scrubbing
+        },
+      });
+
+      const tl = timelineRef.current;
+
+      // SECTION 1 (Hero to About)
+      tl.to(camera.position, { x: 20, y: 0, z: -15, ease: "power1.inOut" }, 0);
+      tl.to(lookAtTarget.current, { x: 20, y: 0, z: -20, ease: "power1.inOut" }, 0);
+      
+      // SECTION 2 (About to Ecosystem)
+      tl.to(camera.position, { x: 40, y: 0, z: -35, ease: "power1.inOut" }, 1);
+      tl.to(lookAtTarget.current, { x: 40, y: 0, z: -40, ease: "power1.inOut" }, 1);
+
+      // SECTION 3 (Ecosystem to Realisations)
+      tl.to(camera.position, { x: 60, y: 0, z: -55, ease: "power1.inOut" }, 2);
+      tl.to(lookAtTarget.current, { x: 60, y: 0, z: -60, ease: "power1.inOut" }, 2);
+
+      // SECTION 4 (Realisations to Contact)
+      tl.to(camera.position, { x: 80, y: 0, z: -75, ease: "power1.inOut" }, 3);
+      tl.to(lookAtTarget.current, { x: 80, y: 0, z: -80, ease: "power1.inOut" }, 3);
     });
 
-    const tl = timelineRef.current;
-
-    // SECTION 1 (Hero to About)
-    tl.to(camera.position, {
-      x: 20,
-      y: 0,
-      z: -15,
-      ease: "power1.inOut",
-    }, 0);
-    tl.to(lookAtTarget.current, {
-      x: 20,
-      y: 0,
-      z: -20,
-      ease: "power1.inOut",
-    }, 0);
-    
-    // SECTION 2 (About to Ecosystem)
-    tl.to(camera.position, {
-      x: 40,
-      y: 0,
-      z: -35,
-      ease: "power1.inOut",
-    }, 1);
-    tl.to(lookAtTarget.current, {
-      x: 40,
-      y: 0,
-      z: -40,
-      ease: "power1.inOut",
-    }, 1);
-
-    // SECTION 3 (Ecosystem to Realisations)
-    tl.to(camera.position, {
-      x: 60,
-      y: 0,
-      z: -55,
-      ease: "power1.inOut",
-    }, 2);
-    tl.to(lookAtTarget.current, {
-      x: 60,
-      y: 0,
-      z: -60,
-      ease: "power1.inOut",
-    }, 2);
-
-    // SECTION 4 (Realisations to Contact)
-    tl.to(camera.position, {
-      x: 80,
-      y: 0,
-      z: -75,
-      ease: "power1.inOut",
-    }, 3);
-    tl.to(lookAtTarget.current, {
-      x: 80,
-      y: 0,
-      z: -80,
-      ease: "power1.inOut",
-    }, 3);
-
-    return () => {
-      if (timelineRef.current) {
-        timelineRef.current.kill();
-      }
-      ScrollTrigger.getAll().forEach(st => st.kill());
-    };
+    return () => ctx.revert();
   }, [camera]);
 
   useFrame(() => {

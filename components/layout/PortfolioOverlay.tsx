@@ -25,8 +25,16 @@ export function PortfolioOverlay() {
 
       sections.forEach((section, index) => {
         if (index === 0) {
-          // HERO : Déjà visible, s'efface entre 10% et 20% du scroll
-          tl.to(section, { opacity: 0, y: -50, duration: 10 }, 10);
+          // HERO : Animation d'entrée au chargement (indépendante du scroll)
+          const heroElements = section.querySelectorAll('.hero-elem');
+          gsap.fromTo(
+            heroElements,
+            { opacity: 0, y: 40 },
+            { opacity: 1, y: 0, duration: 1.5, stagger: 0.3, ease: "power3.out", delay: 0.2 }
+          );
+
+          // HERO : Sortie échelonnée synchronisée au scroll (dure plus longtemps, de 5% à 20%)
+          tl.to(heroElements, { opacity: 0, y: -40, stagger: 2, duration: 10 }, 5);
         } else {
           // Calcul des points d'entrée et de sortie pour un cross-fade fluide
           const enterStart = (index * 20) - 5;
@@ -70,13 +78,22 @@ export function PortfolioOverlay() {
 
       {/* SECTION 1 : HERO */}
       <section className="portfolio-section absolute inset-0 flex flex-col justify-center items-start p-8 md:p-24 pointer-events-auto mix-blend-difference text-white">
-        <h2 className="text-xs uppercase tracking-[0.5em] font-medium opacity-60 mb-6">
+        <h2 className="hero-elem text-xs uppercase tracking-[0.5em] font-medium opacity-60 mb-6">
           Ingénieur Full-Stack
         </h2>
-        <h1 className="text-5xl md:text-8xl font-light tracking-tighter leading-[0.9]">
+        <h1 className="hero-elem text-5xl md:text-8xl font-light tracking-tighter leading-[0.9] mb-8">
           Creative <br />
           <span className="font-bold">Technologist.</span>
         </h1>
+        <p className="hero-elem max-w-lg text-lg md:text-xl font-extralight leading-relaxed opacity-80 border-l border-white/30 pl-6">
+          Construire des expériences numériques immersives où l'art de l'interface visuelle rencontre la puissance des architectures serveurs.
+        </p>
+
+        {/* Indicateur de Scroll */}
+        <div className="hero-elem absolute bottom-12 left-8 md:left-24 flex flex-col items-start gap-4 opacity-50">
+           <span className="text-[10px] uppercase tracking-[0.3em] font-medium">Découvrir l'expérience</span>
+           <div className="w-[1px] h-16 bg-gradient-to-b from-white to-transparent" />
+        </div>
       </section>
 
       {/* SECTION 2 : ABOUT */}
