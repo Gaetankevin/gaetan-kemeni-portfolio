@@ -48,21 +48,21 @@ function CameraRig() {
 
       const tl = timelineRef.current;
 
-      // SECTION 1 (Hero to About)
-      tl.to(camera.position, { x: 20, y: 0, z: -15, ease: "power1.inOut" }, 0);
-      tl.to(lookAtTarget.current, { x: 20, y: 0, z: -20, ease: "power1.inOut" }, 0);
+      // SECTION 1 (Hero to About) - Vol rapide entre 10% et 15%
+      tl.to(camera.position, { x: 20, y: 0, z: -15, ease: "power1.inOut", duration: 5 }, 10);
+      tl.to(lookAtTarget.current, { x: 20, y: 0, z: -20, ease: "power1.inOut", duration: 5 }, 10);
       
-      // SECTION 2 (About to Ecosystem)
-      tl.to(camera.position, { x: 40, y: 0, z: -35, ease: "power1.inOut" }, 1);
-      tl.to(lookAtTarget.current, { x: 40, y: 0, z: -40, ease: "power1.inOut" }, 1);
+      // SECTION 2 (About to Ecosystem) - Vol rapide entre 45% et 50%
+      tl.to(camera.position, { x: 40, y: 0, z: -35, ease: "power1.inOut", duration: 5 }, 45);
+      tl.to(lookAtTarget.current, { x: 40, y: 0, z: -40, ease: "power1.inOut", duration: 5 }, 45);
 
-      // SECTION 3 (Ecosystem to Realisations)
-      tl.to(camera.position, { x: 60, y: 0, z: -55, ease: "power1.inOut" }, 2);
-      tl.to(lookAtTarget.current, { x: 60, y: 0, z: -60, ease: "power1.inOut" }, 2);
+      // SECTION 3 (Ecosystem to Realisations) - Vol rapide entre 70% et 75%
+      tl.to(camera.position, { x: 60, y: 0, z: -55, ease: "power1.inOut", duration: 5 }, 70);
+      tl.to(lookAtTarget.current, { x: 60, y: 0, z: -60, ease: "power1.inOut", duration: 5 }, 70);
 
-      // SECTION 4 (Realisations to Contact)
-      tl.to(camera.position, { x: 80, y: 0, z: -75, ease: "power1.inOut" }, 3);
-      tl.to(lookAtTarget.current, { x: 80, y: 0, z: -80, ease: "power1.inOut" }, 3);
+      // SECTION 4 (Realisations to Contact) - Vol rapide entre 90% et 95%
+      tl.to(camera.position, { x: 80, y: 0, z: -75, ease: "power1.inOut", duration: 5 }, 90);
+      tl.to(lookAtTarget.current, { x: 80, y: 0, z: -80, ease: "power1.inOut", duration: 5 }, 90);
     });
 
     return () => ctx.revert();
