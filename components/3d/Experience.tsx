@@ -2,7 +2,7 @@
 
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
-import { EffectComposer, Noise, Vignette, DepthOfField } from "@react-three/postprocessing";
+import { EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
 import { SignatureObject } from "./SignatureObject";
 import { AboutScene } from "./scenes/AboutScene";
 import { EcosystemScene } from "./scenes/EcosystemScene";
@@ -76,12 +76,21 @@ function CameraRig() {
   return null;
 }
 
-export function Experience() {
+export function Experience({ scrollProgress = 0 }: { scrollProgress?: number }) {
+  // Performance optimization: Mount/unmount 3D scenes dynamically based on active viewport progress
+  // to avoid rendering MeshTransmissionMaterial calculations on invisible objects.
+  const showHero = scrollProgress < 18;
+  const showAbout = scrollProgress >= 8 && scrollProgress < 52;
+  const showEcosystem = scrollProgress >= 43 && scrollProgress < 77;
+  const showWorks = scrollProgress >= 68 && scrollProgress < 97;
+  const showContact = scrollProgress >= 88;
+
   return (
     <Canvas
       shadows
       camera={{ position: [0, 0, 5], fov: 45 }}
-      dpr={[1, 2]}
+      // Cap DPR to 1.5 to save ~40% GPU power on Retina/High-DPI displays
+      dpr={[1, 1.5]}
       gl={{ antialias: true, alpha: false, toneMapping: THREE.ACESFilmicToneMapping }}
     >
       <color attach="background" args={["#000000"]} />
@@ -114,18 +123,22 @@ export function Experience() {
         </group>
       </Environment>
 
-      {/* THE 5 SCENES SCATTERED IN SPACE */}
-      <group position={[0, 0, 0]}>
-        <SignatureObject />
-      </group>
-      <AboutScene position={[20, 0, -20]} />
-      <EcosystemScene position={[40, 0, -40]} />
-      <WorksScene position={[60, 0, -60]} />
-      <ContactScene position={[80, 0, -80]} />
+      {/* THE 5 SCENES SCATTERED IN SPACE - DYNAMICALLY MOUNTED */}
+      {showHero && (
+        <group position={[0, 0, 0]}>
+          <SignatureObject />
+        </group>
+      )}
+      
+      {showAbout && <AboutScene position={[20, 0, -20]} />}
+      {showEcosystem && <EcosystemScene position={[40, 0, -40]} />}
+      {showWorks && <WorksScene position={[60, 0, -60]} />}
+      {showContact && <ContactScene position={[80, 0, -80]} />}
+
       <CameraRig />
 
-      <EffectComposer multisampling={4}>
-        <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={2} height={480} />
+      {/* Disabled multisampling and DepthOfField to resolve lag on mobile and lower-end GPUs */}
+      <EffectComposer multisampling={0}>
         <Noise opacity={0.025} />
         <Vignette eskil={false} offset={0.1} darkness={1.1} />
       </EffectComposer>
