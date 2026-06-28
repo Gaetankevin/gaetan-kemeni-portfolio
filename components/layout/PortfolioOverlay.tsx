@@ -14,10 +14,15 @@ export function PortfolioOverlay() {
     const ctx = gsap.context(() => {
       const sections = gsap.utils.toArray<HTMLElement>(".portfolio-section");
       
+      // CRITICAL FIX: Query the scroll track globally (outside context scope)
+      // to prevent the scoped selector lookup from returning empty.
+      const scrollTrack = document.querySelector(".scroll-track");
+      if (!scrollTrack) return;
+
       // Master timeline running from scroll 0% to 100%
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: ".scroll-track",
+          trigger: scrollTrack,
           start: "top top",
           end: "bottom bottom",
           scrub: true,
@@ -54,20 +59,16 @@ export function PortfolioOverlay() {
           });
         } 
         else if (index === 2) {
-          // ECOSYSTEM : Slideshow from 50% to 70% (2 slides)
-          const slides = section.querySelectorAll('.eco-elem');
-          slides.forEach((slide, i) => {
-            const start = 50 + i * 10;
-            tl.fromTo(slide,
-              { opacity: 0, y: 35 },
-              { opacity: 1, y: 0, duration: 5 },
-              start
-            );
-            tl.to(slide,
-              { opacity: 0, y: -35, duration: 5 },
-              start + 5
-            );
-          });
+          // ECOSYSTEM : Remains visible from 50% to 70% for the Carousel
+          tl.fromTo(section,
+            { opacity: 0, y: 50 },
+            { opacity: 1, y: 0, duration: 5 },
+            50
+          );
+          tl.to(section,
+            { opacity: 0, y: -50, duration: 5 },
+            65
+          );
         } 
         else if (index === 3) {
           // WORKS : Slideshow from 75% to 90% (3 slides)
@@ -98,6 +99,27 @@ export function PortfolioOverlay() {
 
     return () => ctx.revert();
   }, []);
+
+  const technologies = [
+    { name: "React", category: "Frontend UI", logo: "/react.svg" },
+    { name: "Next.js", category: "Frontend SSR", logo: "/next.svg" },
+    { name: "Android", category: "Mobile Dev", logo: "/android.svg" },
+    { name: "Node.js", category: "Backend Runtime", logo: "/node.svg" },
+    { name: "Laravel", category: "Backend Framework", logo: "/laravel.svg" },
+    { name: "Django", category: "Backend & Data", logo: "/django.svg" },
+    { name: "FastAPI", category: "Backend API", logo: "/fastapi.svg" },
+    { name: "Prisma", category: "ORM & Data", logo: "/prisma.svg" },
+    { name: "Tailwind CSS", category: "Design System", logo: "/tailwindcss.svg" },
+    { name: "GitHub", category: "DevOps & VCS", logo: "/github.svg" },
+    { name: "VS Code", category: "IDE", logo: "/vscode.svg" },
+    { name: "Vercel", category: "Cloud & Ops", logo: "/vercel.svg" },
+    { name: "Globe", category: "Web Platform", logo: "/globe.svg" },
+    { name: "Visual Studio", category: "IDE / Desktop", logo: "/microsoftvisualstudio.svg" },
+    { name: "NetBeans", category: "IDE / Java", logo: "/netbeans.svg" },
+  ];
+
+  // Duplicate elements to ensure seamless CSS marquee loop
+  const doubledTechs = [...technologies, ...technologies];
 
   return (
     <div ref={containerRef} className="w-full h-full relative">
@@ -183,34 +205,50 @@ export function PortfolioOverlay() {
       </section>
 
       {/* SECTION 3 : ECOSYSTEME */}
-      <section className="portfolio-section absolute inset-0 pointer-events-none">
-        {/* Slide 1 : Frontend */}
-        <div className="eco-elem opacity-0 absolute inset-0 flex flex-col justify-center items-start p-8 md:p-24 text-white pointer-events-auto">
-          <div className="w-full max-w-xl mix-blend-difference">
-            <h2 className="text-xs uppercase tracking-[0.5em] font-medium text-white/50 mb-12">
-              L'Art du Frontend
-            </h2>
-            <h3 className="text-xs uppercase tracking-widest opacity-40 mb-6 border-b border-white/20 pb-4">Frontend & 3D</h3>
-            <ul className="space-y-4 text-lg md:text-2xl font-extralight">
-              <li className="flex items-center gap-6"><span className="text-xs font-bold w-4 opacity-50">01</span> Vue.js / Nuxt</li>
-              <li className="flex items-center gap-6"><span className="text-xs font-bold w-4 opacity-50">02</span> React / Next.js</li>
-              <li className="flex items-center gap-6"><span className="text-xs font-bold w-4 opacity-50">03</span> Three.js / GSAP</li>
-            </ul>
-          </div>
+      <section className="portfolio-section absolute inset-0 flex flex-col justify-center items-center p-8 md:p-24 text-white pointer-events-auto mix-blend-difference opacity-0">
+        <style>{`
+          @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marquee 30s linear infinite;
+          }
+          .marquee-track:hover {
+            animation-play-state: paused;
+          }
+        `}</style>
+
+        <div className="w-full max-w-5xl text-center mb-12">
+          <h2 className="text-xs uppercase tracking-[0.5em] font-medium text-white/50 mb-4">
+            Écosystème
+          </h2>
+          <h3 className="text-2xl md:text-4xl font-light tracking-tight max-w-2xl mx-auto leading-snug">
+            Des technologies modernes pour des projets complets.
+          </h3>
         </div>
-        
-        {/* Slide 2 : Backend */}
-        <div className="eco-elem opacity-0 absolute inset-0 flex flex-col justify-center items-start p-8 md:p-24 text-white pointer-events-auto">
-          <div className="w-full max-w-xl mix-blend-difference">
-            <h2 className="text-xs uppercase tracking-[0.5em] font-medium text-white/50 mb-12">
-              La Force du Backend
-            </h2>
-            <h3 className="text-xs uppercase tracking-widest opacity-40 mb-6 border-b border-white/20 pb-4">Backend & Data</h3>
-            <ul className="space-y-4 text-lg md:text-2xl font-extralight">
-              <li className="flex items-center gap-6"><span className="text-xs font-bold w-4 opacity-50">04</span> Laravel / PHP</li>
-              <li className="flex items-center gap-6"><span className="text-xs font-bold w-4 opacity-50">05</span> Django / FastAPI</li>
-              <li className="flex items-center gap-6"><span className="text-xs font-bold w-4 opacity-50">06</span> Node.js / Prisma</li>
-            </ul>
+
+        <div className="w-full max-w-5xl overflow-hidden relative py-4">
+          {/* Edge fading effects */}
+          <div className="absolute top-0 left-0 w-24 h-full bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
+
+          <div className="marquee-track flex gap-6">
+            {doubledTechs.map((tech, idx) => (
+              <div key={idx} className="flex flex-col items-center justify-center w-[160px] p-6 rounded-2xl border border-white/5 bg-white/5 backdrop-blur-md hover:border-white/20 transition-all duration-300 group select-none shrink-0">
+                <div className="mb-4 transform group-hover:scale-110 transition-transform duration-300 w-12 h-12 flex items-center justify-center">
+                  <img 
+                    src={tech.logo} 
+                    alt={tech.name} 
+                    className="w-12 h-12 object-contain opacity-50 group-hover:opacity-100 filter brightness-0 invert group-hover:filter-none transition-all duration-300" 
+                  />
+                </div>
+                <span className="text-[11px] uppercase tracking-widest font-light text-white/70 group-hover:text-white transition-colors">{tech.name}</span>
+                <span className="text-[8px] uppercase tracking-wider text-white/40 mt-1">{tech.category}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
