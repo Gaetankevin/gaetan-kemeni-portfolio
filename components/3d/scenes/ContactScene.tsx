@@ -25,19 +25,19 @@ export function ContactScene({ position }: { position: [number, number, number] 
 
   useFrame((state, delta) => {
     if (meshRef.current) {
-      meshRef.current.rotation.y += delta * 0.2;
-      meshRef.current.rotation.x += delta * 0.1;
-      const scale = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.05;
+      meshRef.current.rotation.y += delta * 0.05;
+      meshRef.current.rotation.x += delta * 0.02;
+      const scale = 1 + Math.sin(state.clock.elapsedTime * 0.5) * 0.02;
       meshRef.current.scale.set(scale, scale, scale);
     }
     if (pointsRef.current) {
-      pointsRef.current.rotation.y -= delta * 0.1;
+      pointsRef.current.rotation.y -= delta * 0.02;
     }
   });
 
   return (
     <group position={position}>
-      <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
+      <Float speed={0.6} rotationIntensity={0.15} floatIntensity={0.4}>
         <mesh ref={meshRef}>
           <icosahedronGeometry args={[1.5, 2]} />
           <meshStandardMaterial color="#000000" metalness={1} roughness={0.2} wireframe />

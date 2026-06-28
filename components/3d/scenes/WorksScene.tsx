@@ -25,7 +25,7 @@ export function WorksScene({
   useFrame((state, delta) => {
     if (groupRef.current) {
       groupRef.current.children.forEach((child, i) => {
-        child.position.y += Math.sin(state.clock.elapsedTime * 2 + i) * 0.002;
+        child.position.y += Math.sin(state.clock.elapsedTime * 0.8 + i) * 0.0008;
       });
     }
   });
@@ -34,7 +34,7 @@ export function WorksScene({
     <group position={position}>
       <group ref={groupRef}>
         {[0, 1, 2].map((i) => (
-          <Float key={i} speed={1.5} rotationIntensity={0.2} floatIntensity={1}>
+          <Float key={i} speed={0.6} rotationIntensity={0.1} floatIntensity={0.4}>
             <mesh 
               position={[(i - 1) * 2.5, i * 0.5 - 0.5, i * -2]} 
               rotation={[0.1, -0.2, 0]}

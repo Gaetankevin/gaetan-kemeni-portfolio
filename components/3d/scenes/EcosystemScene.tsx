@@ -38,10 +38,10 @@ export function EcosystemScene({
 
   useFrame((state, delta) => {
     if (serverRef.current) {
-      serverRef.current.position.y = Math.sin(state.clock.elapsedTime) * 0.1 - 1;
+      serverRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.4) * 0.05 - 1;
     }
     if (laptopRef.current) {
-       laptopRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.2;
+       laptopRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.2) * 0.08;
     }
   });
 
@@ -64,7 +64,7 @@ export function EcosystemScene({
       </group>
 
       {/* LAPTOP (Frontend) */}
-      <Float speed={2} rotationIntensity={0.2} floatIntensity={0.5}>
+      <Float speed={0.8} rotationIntensity={0.1} floatIntensity={0.25}>
         <group ref={laptopRef} position={[-1.5, 1, 1]} rotation={[0.2, 0.5, -0.1]}>
           {/* Base */}
           <mesh geometry={baseGeo} position={[0, 0, 0]}>
