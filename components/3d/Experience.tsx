@@ -4,6 +4,10 @@ import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
 import { EffectComposer, Noise, Vignette, DepthOfField } from "@react-three/postprocessing";
 import { SignatureObject } from "./SignatureObject";
+import { AboutScene } from "./scenes/AboutScene";
+import { EcosystemScene } from "./scenes/EcosystemScene";
+import { WorksScene } from "./scenes/WorksScene";
+import { ContactScene } from "./scenes/ContactScene";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
@@ -45,34 +49,58 @@ function CameraRig() {
 
     // SECTION 1 (Hero to About)
     tl.to(camera.position, {
-      x: 3,
-      y: 1,
-      z: 3,
-      ease: "power2.inOut",
+      x: 20,
+      y: 0,
+      z: -15,
+      ease: "power1.inOut",
+    }, 0);
+    tl.to(lookAtTarget.current, {
+      x: 20,
+      y: 0,
+      z: -20,
+      ease: "power1.inOut",
     }, 0);
     
     // SECTION 2 (About to Ecosystem)
     tl.to(camera.position, {
-      x: -2,
-      y: -1,
-      z: 4,
-      ease: "power2.inOut",
+      x: 40,
+      y: 0,
+      z: -35,
+      ease: "power1.inOut",
+    }, 1);
+    tl.to(lookAtTarget.current, {
+      x: 40,
+      y: 0,
+      z: -40,
+      ease: "power1.inOut",
     }, 1);
 
     // SECTION 3 (Ecosystem to Realisations)
     tl.to(camera.position, {
-      x: 2,
-      y: -2,
-      z: 5,
-      ease: "power2.inOut",
+      x: 60,
+      y: 0,
+      z: -55,
+      ease: "power1.inOut",
+    }, 2);
+    tl.to(lookAtTarget.current, {
+      x: 60,
+      y: 0,
+      z: -60,
+      ease: "power1.inOut",
     }, 2);
 
     // SECTION 4 (Realisations to Contact)
     tl.to(camera.position, {
-      x: 0,
+      x: 80,
       y: 0,
-      z: 6,
-      ease: "power2.inOut",
+      z: -75,
+      ease: "power1.inOut",
+    }, 3);
+    tl.to(lookAtTarget.current, {
+      x: 80,
+      y: 0,
+      z: -80,
+      ease: "power1.inOut",
     }, 3);
 
     return () => {
@@ -129,7 +157,14 @@ export function Experience() {
         </group>
       </Environment>
 
-      <SignatureObject />
+      {/* THE 5 SCENES SCATTERED IN SPACE */}
+      <group position={[0, 0, 0]}>
+        <SignatureObject />
+      </group>
+      <AboutScene position={[20, 0, -20]} />
+      <EcosystemScene position={[40, 0, -40]} />
+      <WorksScene position={[60, 0, -60]} />
+      <ContactScene position={[80, 0, -80]} />
       <CameraRig />
 
       <EffectComposer multisampling={4}>
