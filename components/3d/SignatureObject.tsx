@@ -24,17 +24,17 @@ export function SignatureObject({ isMobile = false }: { isMobile?: boolean }) {
 
   useFrame((state, delta) => {
     if (meshRef.current) {
-      meshRef.current.rotation.x += delta * 0.1;
-      meshRef.current.rotation.y += delta * 0.15;
+      meshRef.current.rotation.x += delta * 0.04;
+      meshRef.current.rotation.y += delta * 0.05;
     }
   });
 
   return (
     <Float
-      speed={1.5}
-      rotationIntensity={1}
-      floatIntensity={2}
-      floatingRange={[-0.2, 0.2]}
+      speed={0.8}
+      rotationIntensity={0.3}
+      floatIntensity={0.6}
+      floatingRange={[-0.1, 0.1]}
     >
       <mesh ref={meshRef} castShadow receiveShadow geometry={crystalGeo}>
         {/* Option 2: Fallback to lightweight meshPhysicalMaterial on mobile devices */}

@@ -25,14 +25,14 @@ export function AboutScene({ position }: { position: [number, number, number] })
 
   useFrame((state, delta) => {
     if (groupRef.current) {
-      groupRef.current.rotation.x += delta * 0.05;
-      groupRef.current.rotation.y += delta * 0.08;
+      groupRef.current.rotation.x += delta * 0.02;
+      groupRef.current.rotation.y += delta * 0.03;
     }
   });
 
   return (
     <group position={position}>
-      <Float speed={1} rotationIntensity={0.5} floatIntensity={1}>
+      <Float speed={0.5} rotationIntensity={0.2} floatIntensity={0.4}>
         <group ref={groupRef}>
           {/* Outer Ring */}
           <mesh geometry={torus1Geo}>
